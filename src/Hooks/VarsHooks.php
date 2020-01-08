@@ -30,14 +30,13 @@ class VarsHooks extends AbstractHookSet
         // If the "query" param is set, this case is already handled in API package
         if (!isset($_REQUEST[QueryInputs::QUERY])) {
             // Attempt to get the query from the body, following the GraphQL syntax
-            $payload = false;
-            // if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
-            //     $rawBody     = file_get_contents('php://input');
-            //     $requestData = json_decode($rawBody ?: '', true);
-            // } else {
-            //     $requestData = $_POST;
-            // }
-            // $payload = isset($requestData['query']) ? $requestData['query'] : null;
+            if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
+                $rawBody     = file_get_contents('php://input');
+                $requestData = json_decode($rawBody ?: '', true);
+            } else {
+                $requestData = $_POST;
+            }
+            $payload = isset($requestData['query']) ? $requestData['query'] : null;
             // $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
             if ($payload) {
                 // The fields param can either be an array or a string. Convert them to array
