@@ -36,11 +36,14 @@ class VarsHooks extends AbstractHookSet
             } else {
                 $requestData = $_POST;
             }
-            $payload = isset($requestData['query']) ? $requestData['query'] : null;
+            $graphqlQuery = isset($requestData['query']) ? $requestData['query'] : null;
             // $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
-            if ($payload) {
-                // The fields param can either be an array or a string. Convert them to array
-                $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($payload);
+            if ($graphqlQuery) {
+                // Convert from GraphQL syntax to Field Query syntax
+                // $fieldQuery = ...;
+                $fieldQuery = $graphqlQuery;
+                // Convert the query to an array
+                $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
             }
         }
     }
