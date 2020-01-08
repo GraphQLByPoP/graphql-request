@@ -47,7 +47,7 @@ class VarsHooks extends AbstractHookSet
             if ($graphQLQuery) {
                 // Convert from GraphQL syntax to Field Query syntax
                 $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
-                $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery);
+                $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables);
                 // Convert the query to an array
                 $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
             }
