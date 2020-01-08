@@ -1,1 +1,4 @@
 services:
+    PoP\GraphQLAPIRequest\Hooks\:
+        resource: '../src/Hooks/*'
+        public: true
