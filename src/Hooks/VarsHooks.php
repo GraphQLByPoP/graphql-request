@@ -36,8 +36,13 @@ class VarsHooks extends AbstractHookSet
             } else {
                 $requestData = $_POST;
             }
+            // Maybe override the variables, getting them from the GraphQL dictionary
+            $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
+            if ($variables) {
+                $vars['variables'] = $variables;
+            }
+            // Get the query, transform it, and set it on $vars
             $graphqlQuery = isset($requestData['query']) ? $requestData['query'] : null;
-            // $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
             if ($graphqlQuery) {
                 // Convert from GraphQL syntax to Field Query syntax
                 // $fieldQuery = ...;
