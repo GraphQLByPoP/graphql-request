@@ -1,4 +1,9 @@
 services:
+    _defaults:
+        bind:
+            PoP\Hooks\HooksAPIInterface: '@hooks_api'
+            PoP\Translation\TranslationAPIInterface: '@translation_api'
+
     PoP\GraphQLAPIRequest\Hooks\:
         resource: '../src/Hooks/*'
         public: true
