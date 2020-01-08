@@ -4,6 +4,7 @@ namespace PoP\GraphQLAPIRequest\Hooks;
 use PoP\API\Schema\QueryInputs;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\API\Schema\FieldQueryConvertorUtils;
+use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -42,11 +43,11 @@ class VarsHooks extends AbstractHookSet
                 $vars['variables'] = $variables;
             }
             // Get the query, transform it, and set it on $vars
-            $graphqlQuery = isset($requestData['query']) ? $requestData['query'] : null;
-            if ($graphqlQuery) {
+            $graphQLQuery = isset($requestData['query']) ? $requestData['query'] : null;
+            if ($graphQLQuery) {
                 // Convert from GraphQL syntax to Field Query syntax
-                // $fieldQuery = ...;
-                $fieldQuery = $graphqlQuery;
+                $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
+                $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery);
                 // Convert the query to an array
                 $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
             }
