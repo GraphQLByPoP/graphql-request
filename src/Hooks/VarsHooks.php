@@ -4,7 +4,9 @@ namespace PoP\GraphQLAPIRequest\Hooks;
 use PoP\API\Schema\QueryInputs;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\API\Schema\FieldQueryConvertorUtils;
+use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
+use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -37,19 +39,25 @@ class VarsHooks extends AbstractHookSet
             } else {
                 $requestData = $_POST;
             }
-            // Maybe override the variables, getting them from the GraphQL dictionary
-            $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
-            if ($variables) {
-                $vars['variables'] = $variables;
-            }
             // Get the query, transform it, and set it on $vars
             $graphQLQuery = isset($requestData['query']) ? $requestData['query'] : null;
             if ($graphQLQuery) {
+                // Maybe override the variables, getting them from the GraphQL dictionary
+                $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
+                if ($variables) {
+                    $vars['variables'] = $variables;
+                }
+
                 // Convert from GraphQL syntax to Field Query syntax
                 $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
                 $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables);
                 // Convert the query to an array
                 $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
+            } else {
+                $translationAPI = TranslationAPIFacade::getInstance();
+                $errorMessage = $translationAPI->__('The query is empty', 'api-graphql-request');
+                $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
+                $feedbackMessageStore->addQueryError($errorMessage);
             }
         }
     }
