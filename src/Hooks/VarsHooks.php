@@ -7,6 +7,7 @@ use PoP\API\Schema\FieldQueryConvertorUtils;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
+use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
 use PoP\GraphQLAPIRequest\Environment;
 
 class VarsHooks extends AbstractHookSet
@@ -25,12 +26,12 @@ class VarsHooks extends AbstractHookSet
     public function addURLParamVars($vars_in_array)
     {
         $vars = &$vars_in_array[0];
-        if ($vars['scheme'] == POP_SCHEME_API) {
-            $this->addFieldsToVars($vars);
+        if ($vars['scheme'] == POP_SCHEME_API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
+            $this->processURLParamVars($vars);
         }
     }
 
-    private function addFieldsToVars(&$vars)
+    protected function processURLParamVars(&$vars)
     {
         if (isset($_REQUEST[QueryInputs::QUERY]) && Environment::disableGraphQLAPIForPoP()) {
             // Remove the query set by package API
@@ -63,8 +64,10 @@ class VarsHooks extends AbstractHookSet
                 $vars['skip-fieldargs-from-outputkey'] = true;
             } else {
                 $translationAPI = TranslationAPIFacade::getInstance();
-                $errorMessage = $translationAPI->__('The query is empty', 'api-graphql-request');
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
+                $errorMessage = (isset($_REQUEST[QueryInputs::QUERY]) && Environment::disableGraphQLAPIForPoP()) ?
+                    $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'api-graphql-request') :
+                    $translationAPI->__('The query in the body is empty', 'api-graphql-request');
                 $feedbackMessageStore->addQueryError($errorMessage);
             }
         }
