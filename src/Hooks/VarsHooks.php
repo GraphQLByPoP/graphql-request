@@ -7,15 +7,17 @@ use PoP\API\Schema\FieldQueryConvertorUtils;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
+use PoP\GraphQLAPIRequest\Environment;
 
 class VarsHooks extends AbstractHookSet
 {
     protected function init()
     {
+        // Priority 20: execute after the same code in API, as to remove $vars['query]
         $this->hooksAPI->addAction(
             '\PoP\ComponentModel\Engine_Vars:addVars',
             array($this, 'addURLParamVars'),
-            10,
+            20,
             1
         );
     }
@@ -30,8 +32,12 @@ class VarsHooks extends AbstractHookSet
 
     private function addFieldsToVars(&$vars)
     {
+        if (isset($_REQUEST[QueryInputs::QUERY]) && Environment::disableGraphQLAPIForPoP()) {
+            // Remove the query set by package API
+            unset($vars['query']);
+        }
         // If the "query" param is set, this case is already handled in API package
-        if (!isset($_REQUEST[QueryInputs::QUERY])) {
+        if (!isset($_REQUEST[QueryInputs::QUERY]) || Environment::disableGraphQLAPIForPoP()) {
             // Attempt to get the query from the body, following the GraphQL syntax
             if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
                 $rawBody     = file_get_contents('php://input');
