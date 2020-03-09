@@ -50,18 +50,11 @@ class VarsHooks extends AbstractHookSet
             $graphQLQuery = isset($requestData['query']) ? $requestData['query'] : null;
             if ($graphQLQuery) {
                 // Maybe override the variables, getting them from the GraphQL dictionary
-                $variables = isset($requestData['variables']) ? $requestData['variables'] : null;
+                $variables = $requestData['variables'];
                 if ($variables) {
                     $vars['variables'] = $variables;
                 }
-
-                // Convert from GraphQL syntax to Field Query syntax
-                $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
-                $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables);
-                // Convert the query to an array
-                $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
-                // Do not include the fieldArgs when outputting the field
-                $vars['skip-fieldargs-from-outputkey'] = true;
+                $this->addGraphQLQueryToVars($vars, $graphQLQuery, $variables);
             } else {
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
@@ -71,5 +64,24 @@ class VarsHooks extends AbstractHookSet
                 $feedbackMessageStore->addQueryError($errorMessage);
             }
         }
+    }
+
+    /**
+     * Function is public so it can be invoked from the WordPress plugin
+     *
+     * @param array $vars
+     * @param string $graphQLQuery
+     * @param array|null $variables
+     * @return void
+     */
+    public function addGraphQLQueryToVars(array &$vars, string $graphQLQuery, ?array &$variables = null)
+    {
+        // Convert from GraphQL syntax to Field Query syntax
+        $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
+        $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables ?? []);
+        // Convert the query to an array
+        $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
+        // Do not include the fieldArgs when outputting the field
+        $vars['skip-fieldargs-from-outputkey'] = true;
     }
 }
