@@ -82,7 +82,7 @@ class VarsHooks extends AbstractHookSet
         $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables);
         // Convert the query to an array
         $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
-        // Do not include the fieldArgs when outputting the field
-        $vars['skip-fieldargs-from-outputkey'] = true;
+        // Do not include the fieldArgs and directives when outputting the field
+        $vars['only-fieldname-as-outputkey'] = true;
     }
 }
