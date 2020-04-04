@@ -16,7 +16,7 @@ class VarsHooks extends AbstractHookSet
     {
         // Priority 20: execute after the same code in API, as to remove $vars['query]
         $this->hooksAPI->addAction(
-            '\PoP\ComponentModel\Engine_Vars:addVars',
+            'ApplicationState:addVars',
             array($this, 'addURLParamVars'),
             20,
             1
