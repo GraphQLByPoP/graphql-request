@@ -41,6 +41,6 @@ class Component extends AbstractComponent
         parent::beforeBoot();
 
         // Initialize classes
-        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__.'\\Hooks');
+        ContainerBuilderUtils::instantiateNamespaceServices(__NAMESPACE__ . '\\Hooks');
     }
 }

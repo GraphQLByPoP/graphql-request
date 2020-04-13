@@ -8,4 +8,3 @@ class Environment
         return isset($_ENV['DISABLE_GRAPHQL_API_FOR_POP']) ? strtolower($_ENV['DISABLE_GRAPHQL_API_FOR_POP']) == "true" : false;
     }
 }
-
