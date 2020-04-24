@@ -52,6 +52,9 @@ class VarsHooks extends AbstractHookSet
             // Get the query, transform it, and set it on $vars
             $graphQLQuery = isset($requestData['query']) ? $requestData['query'] : null;
             if ($graphQLQuery) {
+                // Add a flag indicating that we are doing standard GraphQL
+                $vars['standard-graphql'] = true;
+
                 // Maybe override the variables, getting them from the GraphQL dictionary
                 $variables = $requestData['variables'];
                 if ($variables) {
