@@ -12,6 +12,7 @@ use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
 use PoP\GraphQLAPIRequest\Environment;
+use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -42,21 +43,17 @@ class VarsHooks extends AbstractHookSet
         }
         // If the "query" param is set, this case is already handled in API package
         if (!isset($_REQUEST[QueryInputs::QUERY]) || Environment::disableGraphQLAPIForPoP()) {
-            // Attempt to get the query from the body, following the GraphQL syntax
-            if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
-                $rawBody     = file_get_contents('php://input');
-                $requestData = json_decode($rawBody ?: '', true);
-            } else {
-                $requestData = $_POST;
-            }
-            // Get the query, transform it, and set it on $vars
-            $graphQLQuery = isset($requestData['query']) ? $requestData['query'] : null;
-            if ($graphQLQuery) {
-                // Add a flag indicating that we are doing standard GraphQL
-                $vars['standard-graphql'] = true;
+            // Add a flag indicating that we are doing standard GraphQL
+            // Do it already, so that even if there is no query, the error doesn't have "extensions"
+            $vars['standard-graphql'] = true;
 
+            // Process the query, or show an error if empty
+            list(
+                $graphQLQuery,
+                $variables
+            ) = QueryExecutionHelpers::getRequestedGraphQLQueryAndVariables();
+            if ($graphQLQuery) {
                 // Maybe override the variables, getting them from the GraphQL dictionary
-                $variables = $requestData['variables'];
                 if ($variables) {
                     $vars['variables'] = $variables;
                 }
