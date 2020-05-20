@@ -1,2 +1,2 @@
 <?php
-\PoP\GraphQLAPIRequest\Component::init();
+//\PoP\GraphQLAPIRequest\Component::initialize();
