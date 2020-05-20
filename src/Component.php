@@ -15,6 +15,8 @@ use PoP\GraphQLAPIQuery\Component as GraphQLAPIQueryComponent;
  */
 class Component extends AbstractComponent
 {
+    use YAMLServicesTrait, CanDisableComponentTrait;
+    
     // const VERSION = '0.1.0';
 
     public static function getDependedComponentClasses(): array
@@ -23,7 +25,6 @@ class Component extends AbstractComponent
             \PoP\GraphQLAPIQuery\Component::class,
         ];
     }
-    use YAMLServicesTrait, CanDisableComponentTrait;
 
     /**
      * Initialize services
