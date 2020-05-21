@@ -20,12 +20,13 @@ Via Composer
 composer require getpop/api-graphql-request
 ```
 
-<!--
 ## Usage
 
+Initialize the component:
+
 ``` php
+\PoP\GraphQLAPIRequest\Component::initialize();
 ```
--->
 
 ## Standards
 
