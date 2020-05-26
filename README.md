@@ -25,7 +25,9 @@ composer require getpop/api-graphql-request
 Initialize the component:
 
 ``` php
-\PoP\GraphQLAPIRequest\Component::initialize();
+\PoP\Root\ComponentLoader::initializeComponents([
+    \PoP\GraphQLAPIRequest\Component::class,
+]);
 ```
 
 ## Standards
