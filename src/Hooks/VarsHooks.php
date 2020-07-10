@@ -11,7 +11,7 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
-use PoP\GraphQLAPIRequest\Environment;
+use PoP\GraphQLAPIRequest\ComponentConfiguration;
 use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
 
 class VarsHooks extends AbstractHookSet
@@ -37,12 +37,12 @@ class VarsHooks extends AbstractHookSet
 
     protected function processURLParamVars(&$vars)
     {
-        if (isset($_REQUEST[QueryInputs::QUERY]) && Environment::disableGraphQLAPIForPoP()) {
+        if (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) {
             // Remove the query set by package API
             unset($vars['query']);
         }
         // If the "query" param is set, this case is already handled in API package
-        if (!isset($_REQUEST[QueryInputs::QUERY]) || Environment::disableGraphQLAPIForPoP()) {
+        if (!isset($_REQUEST[QueryInputs::QUERY]) || ComponentConfiguration::disableGraphQLAPIForPoP()) {
             // Add a flag indicating that we are doing standard GraphQL
             // Do it already, so that even if there is no query, the error doesn't have "extensions"
             $vars['standard-graphql'] = true;
@@ -61,7 +61,7 @@ class VarsHooks extends AbstractHookSet
             } else {
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
-                $errorMessage = (isset($_REQUEST[QueryInputs::QUERY]) && Environment::disableGraphQLAPIForPoP()) ?
+                $errorMessage = (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) ?
                     $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'api-graphql-request') :
                     $translationAPI->__('The query in the body is empty', 'api-graphql-request');
                 $feedbackMessageStore->addQueryError($errorMessage);
