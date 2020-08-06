@@ -82,9 +82,22 @@ class VarsHooks extends AbstractHookSet
         $variables = $vars['variables'] ?? [];
         // Convert from GraphQL syntax to Field Query syntax
         $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
-        $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery($graphQLQuery, $variables);
-        // Convert the query to an array
-        $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($fieldQuery);
+        list(
+            $requestedFieldQuery,
+            $executableFieldQuery
+        ) = $graphQLQueryConvertor->convertFromGraphQLToFieldQuerySet(
+            $graphQLQuery,
+            $variables
+        );
+
+        // Convert the query to an array. Place the executable query under "query"
+        $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray($executableFieldQuery);
+        // If the requested and the executable query are different, then
+        // also convert the requested query
+        if ($requestedFieldQuery != $executableFieldQuery) {
+            $vars['requested-query'] = FieldQueryConvertorUtils::getQueryAsArray($requestedFieldQuery);
+        }
+
         // Do not include the fieldArgs and directives when outputting the field
         $vars['only-fieldname-as-outputkey'] = true;
     }
