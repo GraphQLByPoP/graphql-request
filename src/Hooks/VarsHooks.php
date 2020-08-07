@@ -6,13 +6,13 @@ namespace PoP\GraphQLAPIRequest\Hooks;
 
 use PoP\API\Schema\QueryInputs;
 use PoP\Engine\Hooks\AbstractHookSet;
-use PoP\API\Schema\FieldQueryConvertorUtils;
+use PoP\API\State\ApplicationStateUtils;
+use PoP\GraphQLAPIRequest\ComponentConfiguration;
 use PoP\Translation\Facades\TranslationAPIFacade;
+use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
 use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
-use PoP\GraphQLAPIRequest\ComponentConfiguration;
-use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -82,22 +82,13 @@ class VarsHooks extends AbstractHookSet
         $variables = $vars['variables'] ?? [];
         // Convert from GraphQL syntax to Field Query syntax
         $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
-        $fieldQuerySet = $graphQLQueryConvertor->convertFromGraphQLToFieldQuerySet(
+        $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery(
             $graphQLQuery,
             $variables
         );
 
-        // Convert the query to an array. Place the executable query under "query"
-        $vars['query'] = FieldQueryConvertorUtils::getQueryAsArray(
-            $fieldQuerySet->getExecutableFieldQuery()
-        );
-        // If the requested and the executable query are different, then
-        // also convert the requested query
-        if ($fieldQuerySet->areRequestedAndExecutableFieldQueriesDifferent()) {
-            $vars['requested-query'] = FieldQueryConvertorUtils::getQueryAsArray(
-                $fieldQuerySet->getRequestedFieldQuery()
-            );
-        }
+        // Set the query in $vars
+        ApplicationStateUtils::maybeConvertQueryAndAddToVars($vars, $fieldQuery);
 
         // Do not include the fieldArgs and directives when outputting the field
         $vars['only-fieldname-as-outputkey'] = true;
