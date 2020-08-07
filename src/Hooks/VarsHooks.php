@@ -50,14 +50,15 @@ class VarsHooks extends AbstractHookSet
             // Process the query, or show an error if empty
             list(
                 $graphQLQuery,
-                $variables
-            ) = QueryExecutionHelpers::getRequestedGraphQLQueryAndVariables();
+                $variables,
+                $operationName
+            ) = QueryExecutionHelpers::extractRequestedGraphQLQueryPayload();
             if ($graphQLQuery) {
                 // Maybe override the variables, getting them from the GraphQL dictionary
                 if ($variables) {
                     $vars['variables'] = $variables;
                 }
-                $this->addGraphQLQueryToVars($vars, $graphQLQuery);
+                $this->addGraphQLQueryToVars($vars, $graphQLQuery, $operationName);
             } else {
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
@@ -76,7 +77,7 @@ class VarsHooks extends AbstractHookSet
      * @param string $graphQLQuery
      * @return void
      */
-    public function addGraphQLQueryToVars(array &$vars, string $graphQLQuery)
+    public function addGraphQLQueryToVars(array &$vars, string $graphQLQuery, ?string $operationName = null)
     {
         // Take the existing variables from $vars, so they must be set in advance
         $variables = $vars['variables'] ?? [];
@@ -84,7 +85,8 @@ class VarsHooks extends AbstractHookSet
         $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
         $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery(
             $graphQLQuery,
-            $variables
+            $variables,
+            $operationName
         );
 
         // Set the query in $vars
