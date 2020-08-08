@@ -63,8 +63,8 @@ class VarsHooks extends AbstractHookSet
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
                 $errorMessage = (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) ?
-                    $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'api-graphql-request') :
-                    $translationAPI->__('The query in the body is empty', 'api-graphql-request');
+                    $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'graphql-request') :
+                    $translationAPI->__('The query in the body is empty', 'graphql-request');
                 $feedbackMessageStore->addQueryError($errorMessage);
             }
         }
