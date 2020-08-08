@@ -17,7 +17,7 @@ Enables GraphQL for PoP to process the GraphQL query using the standard syntax
 Via Composer
 
 ``` bash
-composer require getpop/graphql-request
+composer require graphql-by-pop/graphql-request
 ```
 
 ## Usage
@@ -75,17 +75,17 @@ If you discover any security related issues, please email leo@getpop.org instead
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/getpop/graphql-request.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/graphql-by-pop/graphql-request.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/getpop/graphql-request/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/getpop/graphql-request.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/getpop/graphql-request.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/getpop/graphql-request.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/graphql-by-pop/graphql-request/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/graphql-by-pop/graphql-request.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/graphql-by-pop/graphql-request.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/graphql-by-pop/graphql-request.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/getpop/graphql-request
-[link-travis]: https://travis-ci.org/getpop/graphql-request
-[link-scrutinizer]: https://scrutinizer-ci.com/g/getpop/graphql-request/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/getpop/graphql-request
-[link-downloads]: https://packagist.org/packages/getpop/graphql-request
+[link-packagist]: https://packagist.org/packages/graphql-by-pop/graphql-request
+[link-travis]: https://travis-ci.org/graphql-by-pop/graphql-request
+[link-scrutinizer]: https://scrutinizer-ci.com/g/graphql-by-pop/graphql-request/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/graphql-by-pop/graphql-request
+[link-downloads]: https://packagist.org/packages/graphql-by-pop/graphql-request
 [link-author]: https://github.com/leoloso
 [link-contributors]: ../../contributors
