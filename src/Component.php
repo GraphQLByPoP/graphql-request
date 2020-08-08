@@ -8,7 +8,7 @@ use PoP\Root\Component\AbstractComponent;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\Root\Component\CanDisableComponentTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
-use PoP\GraphQLAPIQuery\Component as GraphQLAPIQueryComponent;
+use GraphQLByPoP\GraphQLAPIQuery\Component as GraphQLAPIQueryComponent;
 
 /**
  * Initialize component
@@ -22,7 +22,7 @@ class Component extends AbstractComponent
     public static function getDependedComponentClasses(): array
     {
         return [
-            \PoP\GraphQLAPIQuery\Component::class,
+            \GraphQLByPoP\GraphQLAPIQuery\Component::class,
         ];
     }
 

@@ -10,7 +10,7 @@ use PoP\API\State\ApplicationStateUtils;
 use PoP\GraphQLAPIRequest\ComponentConfiguration;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
-use PoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
+use GraphQLByPoP\GraphQLAPIQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
 
