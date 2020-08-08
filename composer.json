@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PoP\\GraphQLAPIRequest\\": "src"
+            "GraphQLByPoP\\GraphQLRequest\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PoP\\GraphQLAPIRequest\\": "tests"
+            "GraphQLByPoP\\GraphQLRequest\\": "tests"
         }
     },
     "scripts": {

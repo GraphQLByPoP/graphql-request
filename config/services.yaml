@@ -4,6 +4,6 @@ services:
             PoP\Hooks\HooksAPIInterface: '@hooks_api'
             PoP\Translation\TranslationAPIInterface: '@translation_api'
 
-    PoP\GraphQLAPIRequest\Hooks\:
+    GraphQLByPoP\GraphQLRequest\Hooks\:
         resource: '../src/Hooks/*'
         public: true

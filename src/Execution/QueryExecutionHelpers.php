@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PoP\GraphQLAPIRequest\Execution;
+namespace GraphQLByPoP\GraphQLRequest\Execution;
 
 class QueryExecutionHelpers
 {

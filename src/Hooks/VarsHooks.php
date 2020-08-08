@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PoP\GraphQLAPIRequest\Hooks;
+namespace GraphQLByPoP\GraphQLRequest\Hooks;
 
 use PoP\API\Schema\QueryInputs;
 use PoP\Engine\Hooks\AbstractHookSet;
 use PoP\API\State\ApplicationStateUtils;
-use PoP\GraphQLAPIRequest\ComponentConfiguration;
+use GraphQLByPoP\GraphQLRequest\ComponentConfiguration;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\GraphQLAPIRequest\Execution\QueryExecutionHelpers;
+use GraphQLByPoP\GraphQLRequest\Execution\QueryExecutionHelpers;
 use GraphQLByPoP\GraphQLQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
