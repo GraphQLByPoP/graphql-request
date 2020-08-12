@@ -86,6 +86,7 @@ class VarsHooks extends AbstractHookSet
         $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery(
             $graphQLQuery,
             $variables,
+            ComponentConfiguration::enableMultipleQueryExecution(),
             $operationName
         );
 
