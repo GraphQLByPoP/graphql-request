@@ -13,6 +13,7 @@ use GraphQLByPoP\GraphQLRequest\Execution\QueryExecutionHelpers;
 use GraphQLByPoP\GraphQLQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
+use PoP\API\Response\Schemes as APISchemes;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -30,7 +31,7 @@ class VarsHooks extends AbstractHookSet
     public function addURLParamVars($vars_in_array)
     {
         $vars = &$vars_in_array[0];
-        if ($vars['scheme'] == \POP_SCHEME_API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
+        if ($vars['scheme'] == APISchemes::API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
             $this->processURLParamVars($vars);
         }
     }
