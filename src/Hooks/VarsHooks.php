@@ -28,7 +28,10 @@ class VarsHooks extends AbstractHookSet
         );
     }
 
-    public function addURLParamVars($vars_in_array)
+    /**
+     * @param array<array> $vars_in_array
+     */
+    public function addURLParamVars(array $vars_in_array): void
     {
         $vars = &$vars_in_array[0];
         if ($vars['scheme'] == APISchemes::API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
@@ -36,7 +39,10 @@ class VarsHooks extends AbstractHookSet
         }
     }
 
-    protected function processURLParamVars(&$vars)
+    /**
+     * @param array<string, mixed> $vars
+     */
+    protected function processURLParamVars(array &$vars): void
     {
         if (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) {
             // Remove the query set by package API
