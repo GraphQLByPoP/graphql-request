@@ -33,7 +33,7 @@ class VarsHooks extends AbstractHookSet
      */
     public function addURLParamVars(array $vars_in_array): void
     {
-        $vars = &$vars_in_array[0];
+        [&$vars] = $vars_in_array;
         if ($vars['scheme'] == APISchemes::API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
             $this->processURLParamVars($vars);
         }
