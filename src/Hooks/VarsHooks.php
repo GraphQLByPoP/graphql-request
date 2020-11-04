@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace GraphQLByPoP\GraphQLRequest\Hooks;
 
 use PoP\API\Schema\QueryInputs;
-use PoP\Engine\Hooks\AbstractHookSet;
+use PoP\Hooks\AbstractHookSet;
 use PoP\API\State\ApplicationStateUtils;
 use GraphQLByPoP\GraphQLRequest\ComponentConfiguration;
 use PoP\Translation\Facades\TranslationAPIFacade;
