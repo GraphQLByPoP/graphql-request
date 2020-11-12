@@ -90,12 +90,18 @@ class VarsHooks extends AbstractHookSet
         $variables = $vars['variables'] ?? [];
         // Convert from GraphQL syntax to Field Query syntax
         $graphQLQueryConvertor = GraphQLQueryConvertorFacade::getInstance();
-        $fieldQuery = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery(
+        list(
+            $operationType,
+            $fieldQuery
+        ) = $graphQLQueryConvertor->convertFromGraphQLToFieldQuery(
             $graphQLQuery,
             $variables,
             ComponentConfiguration::enableMultipleQueryExecution(),
             $operationName
         );
+
+        // Set the operation type
+        $vars['graphql-operation-type'] = $operationType;
 
         // Set the query in $vars
         ApplicationStateUtils::maybeConvertQueryAndAddToVars($vars, $fieldQuery);
