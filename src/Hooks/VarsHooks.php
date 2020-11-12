@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace GraphQLByPoP\GraphQLRequest\Hooks;
 
-use PoP\API\Schema\QueryInputs;
 use PoP\Hooks\AbstractHookSet;
+use PoP\API\Schema\QueryInputs;
 use PoP\API\State\ApplicationStateUtils;
-use GraphQLByPoP\GraphQLRequest\ComponentConfiguration;
-use PoP\Translation\Facades\TranslationAPIFacade;
-use GraphQLByPoP\GraphQLRequest\Execution\QueryExecutionHelpers;
-use GraphQLByPoP\GraphQLQuery\Facades\GraphQLQueryConvertorFacade;
-use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
-use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
 use PoP\API\Response\Schemes as APISchemes;
+use PoP\Translation\Facades\TranslationAPIFacade;
+use GraphQLByPoP\GraphQLQuery\Schema\OperationTypes;
+use GraphQLByPoP\GraphQLRequest\ComponentConfiguration;
+use GraphQLByPoP\GraphQLRequest\Execution\QueryExecutionHelpers;
+use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
+use GraphQLByPoP\GraphQLQuery\Facades\GraphQLQueryConvertorFacade;
+use PoP\ComponentModel\CheckpointProcessors\MutationCheckpointProcessor;
+use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -25,6 +27,24 @@ class VarsHooks extends AbstractHookSet
             array($this, 'addURLParamVars'),
             20,
             1
+        );
+
+        // Change the error message when mutations are not supported
+        $this->hooksAPI->addFilter(
+            MutationCheckpointProcessor::HOOK_MUTATIONS_NOT_SUPPORTED_ERROR_MSG,
+            array($this, 'getMutationsNotSupportedErrorMessage')
+        );
+    }
+
+    /**
+     * @param array<array> $vars_in_array
+     */
+    public function getMutationsNotSupportedErrorMessage(): string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return sprintf(
+            $translationAPI->__('Use the operation type \'%s\' to execute mutations', 'graphql-request'),
+            OperationTypes::MUTATION
         );
     }
 
@@ -100,8 +120,9 @@ class VarsHooks extends AbstractHookSet
             $operationName
         );
 
-        // Set the operation type
+        // Set the operation type and, based on it, if mutations are supported
         $vars['graphql-operation-type'] = $operationType;
+        $vars['are-mutations-executable'] = $operationType == OperationTypes::MUTATION;
 
         // Set the query in $vars
         ApplicationStateUtils::maybeConvertQueryAndAddToVars($vars, $fieldQuery);
