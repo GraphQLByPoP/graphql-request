@@ -8,6 +8,7 @@ use PoP\Hooks\AbstractHookSet;
 use PoP\API\Schema\QueryInputs;
 use PoP\API\State\ApplicationStateUtils;
 use PoP\API\Response\Schemes as APISchemes;
+use PoP\ComponentModel\State\ApplicationState;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use GraphQLByPoP\GraphQLQuery\Schema\OperationTypes;
 use GraphQLByPoP\GraphQLRequest\ComponentConfiguration;
@@ -32,20 +33,27 @@ class VarsHooks extends AbstractHookSet
         // Change the error message when mutations are not supported
         $this->hooksAPI->addFilter(
             MutationCheckpointProcessor::HOOK_MUTATIONS_NOT_SUPPORTED_ERROR_MSG,
-            array($this, 'getMutationsNotSupportedErrorMessage')
+            array($this, 'getMutationsNotSupportedErrorMessage'),
+            10,
+            1
         );
     }
 
     /**
+     * Override the error message when executing a query through standard GraphQL
      * @param array<array> $vars_in_array
      */
-    public function getMutationsNotSupportedErrorMessage(): string
+    public function getMutationsNotSupportedErrorMessage($errorMessage): string
     {
-        $translationAPI = TranslationAPIFacade::getInstance();
-        return sprintf(
-            $translationAPI->__('Use the operation type \'%s\' to execute mutations', 'graphql-request'),
-            OperationTypes::MUTATION
-        );
+        $vars = ApplicationState::getVars();
+        if ($vars['standard-graphql']) {
+            $translationAPI = TranslationAPIFacade::getInstance();
+            return sprintf(
+                $translationAPI->__('Use the operation type \'%s\' to execute mutations', 'graphql-request'),
+                OperationTypes::MUTATION
+            );
+        }
+        return $errorMessage;
     }
 
     /**
