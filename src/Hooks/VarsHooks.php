@@ -130,7 +130,7 @@ class VarsHooks extends AbstractHookSet
 
         // Set the operation type and, based on it, if mutations are supported
         $vars['graphql-operation-type'] = $operationType;
-        $vars['are-mutations-executable'] = $operationType == OperationTypes::MUTATION;
+        $vars['are-mutations-enabled'] = $operationType == OperationTypes::MUTATION;
 
         // Set the query in $vars
         ApplicationStateUtils::maybeConvertQueryAndAddToVars($vars, $fieldQuery);
