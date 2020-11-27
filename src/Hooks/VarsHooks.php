@@ -67,6 +67,12 @@ class VarsHooks extends AbstractHookSet
         }
     }
 
+    public function setStandardGraphQLVars(array &$vars): void
+    {
+        // Add a flag indicating that we are doing standard GraphQL
+        $vars['standard-graphql'] = true;
+    }
+
     /**
      * @param array<string, mixed> $vars
      */
@@ -80,7 +86,7 @@ class VarsHooks extends AbstractHookSet
         if (!isset($_REQUEST[QueryInputs::QUERY]) || ComponentConfiguration::disableGraphQLAPIForPoP()) {
             // Add a flag indicating that we are doing standard GraphQL
             // Do it already, so that even if there is no query, the error doesn't have "extensions"
-            $vars['standard-graphql'] = true;
+            $this->setStandardGraphQLVars($vars);
 
             // Process the query, or show an error if empty
             list(
