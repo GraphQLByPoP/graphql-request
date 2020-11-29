@@ -95,8 +95,9 @@ class VarsHooks extends AbstractHookSet
             // Add a flag indicating that we are doing standard GraphQL
             // Do it already, so that even if there is no query, the error doesn't have "extensions"
             $this->setStandardGraphQLVars($vars);
-
-            // Process the query, or show an error if empty
+            // The GraphQL query is either a persisted query passed through URL param via GET
+            // (such as ?query=!introspectionQuery) or, if not, it's passed through the
+            // body via POST, as standard behavior
             if ($isGraphQLPersistedQuery) {
                 $graphQLQuery = $variables = $operationName = null;
                 // Get the query name, and extract the query from the PersistedQueryManager
@@ -112,18 +113,23 @@ class VarsHooks extends AbstractHookSet
                     $operationName
                 ) = QueryExecutionHelpers::extractRequestedGraphQLQueryPayload();
             }
+            // Process the query, or show an error if empty
             if ($graphQLQuery) {
                 // Maybe override the variables, getting them from the GraphQL dictionary
                 if ($variables) {
                     $vars['variables'] = $variables;
                 }
                 $this->addGraphQLQueryToVars($vars, $graphQLQuery, $operationName);
-            } else {
+            } elseif ($disablePoPQuery || !$isGraphQLPersistedQuery) {
+                // If the persisted query does not exist, no need to show an error,
+                // since the "field ... does not exist" already takes care of it,
+                // here for GraphQL and also for PoP.
+                // Show error only for the other cases
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
                 $errorMessage = $disablePoPQuery ?
-                    $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'graphql-request') :
-                    $translationAPI->__('The query in the body is empty', 'graphql-request');
+                    $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'graphql-request')
+                    : $translationAPI->__('The query in the body is empty', 'graphql-request');
                 $feedbackMessageStore->addQueryError($errorMessage);
             }
         }
