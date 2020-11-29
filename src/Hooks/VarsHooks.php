@@ -17,6 +17,7 @@ use PoP\ComponentModel\Facades\Schema\FeedbackMessageStoreFacade;
 use GraphQLByPoP\GraphQLQuery\Facades\GraphQLQueryConvertorFacade;
 use PoP\ComponentModel\CheckpointProcessors\MutationCheckpointProcessor;
 use PoP\GraphQLAPI\DataStructureFormatters\GraphQLDataStructureFormatter;
+use GraphQLByPoP\GraphQLRequest\Facades\GraphQLPersistedQueryManagerFacade;
 
 class VarsHooks extends AbstractHookSet
 {
@@ -78,22 +79,39 @@ class VarsHooks extends AbstractHookSet
      */
     protected function processURLParamVars(array &$vars): void
     {
-        if (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) {
+        $disablePoPQuery = isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP();
+        if ($disablePoPQuery) {
             // Remove the query set by package API
             unset($vars['query']);
         }
         // If the "query" param is set, this case is already handled in API package
-        if (!isset($_REQUEST[QueryInputs::QUERY]) || ComponentConfiguration::disableGraphQLAPIForPoP()) {
+        // Unless it is a persisted query for GraphQL, then deal with it here
+        $graphQLPersistedQueryManager = GraphQLPersistedQueryManagerFacade::getInstance();
+        $isGraphQLPersistedQuery = isset($_REQUEST[QueryInputs::QUERY]) && $graphQLPersistedQueryManager->isPersistedQuery($_REQUEST[QueryInputs::QUERY]);
+        if (!isset($_REQUEST[QueryInputs::QUERY])
+            || ComponentConfiguration::disableGraphQLAPIForPoP()
+            || $isGraphQLPersistedQuery
+        ) {
             // Add a flag indicating that we are doing standard GraphQL
             // Do it already, so that even if there is no query, the error doesn't have "extensions"
             $this->setStandardGraphQLVars($vars);
 
             // Process the query, or show an error if empty
-            list(
-                $graphQLQuery,
-                $variables,
-                $operationName
-            ) = QueryExecutionHelpers::extractRequestedGraphQLQueryPayload();
+            if ($isGraphQLPersistedQuery) {
+                $graphQLQuery = $variables = $operationName = null;
+                // Get the query name, and extract the query from the PersistedQueryManager
+                $query = $_REQUEST[QueryInputs::QUERY];
+                $queryName = $graphQLPersistedQueryManager->getPersistedQueryName($query);
+                if ($graphQLPersistedQueryManager->hasPersistedQuery($queryName)) {
+                    $graphQLQuery = $graphQLPersistedQueryManager->getPersistedQuery($queryName);
+                }
+            } else {
+                list(
+                    $graphQLQuery,
+                    $variables,
+                    $operationName
+                ) = QueryExecutionHelpers::extractRequestedGraphQLQueryPayload();
+            }
             if ($graphQLQuery) {
                 // Maybe override the variables, getting them from the GraphQL dictionary
                 if ($variables) {
@@ -103,7 +121,7 @@ class VarsHooks extends AbstractHookSet
             } else {
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $feedbackMessageStore = FeedbackMessageStoreFacade::getInstance();
-                $errorMessage = (isset($_REQUEST[QueryInputs::QUERY]) && ComponentConfiguration::disableGraphQLAPIForPoP()) ?
+                $errorMessage = $disablePoPQuery ?
                     $translationAPI->__('No query was provided. (The body has no query, and the query provided as a URL param is ignored because of configuration)', 'graphql-request') :
                     $translationAPI->__('The query in the body is empty', 'graphql-request');
                 $feedbackMessageStore->addQueryError($errorMessage);
