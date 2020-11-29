@@ -3,8 +3,8 @@ services:
         public: true
         autowire: true
 
-    GraphQLByPoP\GraphQLReques\PersistedQueries\GraphQLPersistedQueryManagerInterface:
-        class: \GraphQLByPoP\GraphQLReques\PersistedQueries\GraphQLPersistedQueryManager
+    GraphQLByPoP\GraphQLRequest\PersistedQueries\GraphQLPersistedQueryManagerInterface:
+        class: \GraphQLByPoP\GraphQLRequest\PersistedQueries\GraphQLPersistedQueryManager
 
     GraphQLByPoP\GraphQLRequest\Hooks\:
         resource: '../src/Hooks/*'
