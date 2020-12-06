@@ -26,7 +26,7 @@ class VarsHooks extends AbstractHookSet
         // Priority 20: execute after the same code in API, as to remove $vars['query]
         $this->hooksAPI->addAction(
             'ApplicationState:addVars',
-            array($this, 'addURLParamVars'),
+            array($this, 'addVars'),
             20,
             1
         );
@@ -60,9 +60,13 @@ class VarsHooks extends AbstractHookSet
     /**
      * @param array<array> $vars_in_array
      */
-    public function addURLParamVars(array $vars_in_array): void
+    public function addVars(array $vars_in_array): void
     {
         [&$vars] = $vars_in_array;
+
+        // Set always. It will be overriden below
+        $vars['standard-graphql'] = false;
+
         if ($vars['scheme'] == APISchemes::API && $vars['datastructure'] == GraphQLDataStructureFormatter::getName()) {
             $this->processURLParamVars($vars);
         }
