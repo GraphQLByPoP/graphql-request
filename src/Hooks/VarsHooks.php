@@ -101,7 +101,7 @@ class VarsHooks extends AbstractHookSet
             if ($isGraphQLPersistedQuery) {
                 $graphQLQuery = $variables = $operationName = null;
                 // Get the query name, and extract the query from the PersistedQueryManager
-                $query = $_REQUEST[QueryInputs::QUERY];
+                $query = $_REQUEST[QueryInputs::QUERY] ?? '';
                 $queryName = $graphQLPersistedQueryManager->getPersistedQueryName($query);
                 if ($graphQLPersistedQueryManager->hasPersistedQuery($queryName)) {
                     $graphQLQuery = $graphQLPersistedQueryManager->getPersistedQuery($queryName);
