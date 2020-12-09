@@ -17,9 +17,9 @@ class QueryExecutionHelpers
         }
         // Get the query, transform it, and set it on $vars
         return [
-            $payload['query'],
-            $payload['variables'],
-            $payload['operationName']
+            $payload['query'] ?? null,
+            $payload['variables'] ?? null,
+            $payload['operationName'] ?? null
         ];
     }
 }
