@@ -6,7 +6,7 @@ namespace GraphQLByPoP\GraphQLRequest\Hooks;
 
 use PoP\Root\App;
 use GraphQLByPoP\GraphQLQuery\Schema\OperationTypes;
-use PoP\BasicService\AbstractHookSet;
+use PoP\Root\Hooks\AbstractHookSet;
 use PoP\ComponentModel\CheckpointProcessors\MutationCheckpointProcessor;
 
 class VarsHookSet extends AbstractHookSet
@@ -14,7 +14,7 @@ class VarsHookSet extends AbstractHookSet
     protected function init(): void
     {
         // Change the error message when mutations are not supported
-        $this->getHooksAPI()->addFilter(
+        App::addFilter(
             MutationCheckpointProcessor::HOOK_MUTATIONS_NOT_SUPPORTED_ERROR_MSG,
             array($this, 'getMutationsNotSupportedErrorMessage'),
             10,
