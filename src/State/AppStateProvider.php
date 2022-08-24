@@ -20,9 +20,13 @@ class AppStateProvider extends AbstractAppStateProvider
     }
     final protected function getGraphQLDataStructureFormatter(): GraphQLDataStructureFormatter
     {
+        /** @var GraphQLDataStructureFormatter */
         return $this->graphQLDataStructureFormatter ??= $this->instanceManager->getInstance(GraphQLDataStructureFormatter::class);
     }
 
+    /**
+     * @param array<string,mixed> $state
+     */
     public function consolidate(array &$state): void
     {
         if (!($state['scheme'] === APISchemes::API && $state['datastructure'] === $this->getGraphQLDataStructureFormatter()->getName())) {
